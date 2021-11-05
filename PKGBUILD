@@ -26,8 +26,10 @@ build() {
 }
 
 package() {
+	cd "$srcdir/$basepkgname"
+	mkdir -p $pkgdir/usr/bin
 	install -Dm755 \
-		"$srcdir/${pkgname%-git}/_build/default/bin/erlang_ls" \
-		"$pkgdir/usr/bin/erlang_ls"
-
+		_build/default/bin/erlang_ls \
+		_build/dap/bin/els_dap \
+		$pkgdir/usr/bin
 }
