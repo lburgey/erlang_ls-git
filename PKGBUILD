@@ -29,9 +29,16 @@ pkgver() {
 	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
+prepare() {
+	cd "$srcdir/${pkgname%-git}"
+	# OTP 29 also warns about bindings exported from begin expressions.
+	sed -i 's/    warn_export_vars,/    nowarn_export_vars,/' rebar.config
+}
+
 build() {
 	cd "$srcdir/${pkgname%-git}"
-	make
+	# OTP 29 adds warnings that older bundled dependencies treat as errors.
+	ERL_COMPILER_OPTIONS='[nowarn_deprecated_catch,nowarn_match_alias_pats,nowarn_export_var_subexpr]' make
 }
 
 package() {
